@@ -5,25 +5,25 @@ var util = require('util');
 var vfs = require('vinyl-fs');
 
 function Stream(options) {
-	options = util._extend({objectMode: true}, options);
-	Transform.call(this, options);
+  options = util._extend({objectMode: true}, options);
+  Transform.call(this, options);
 }
 util.inherits(Stream, Transform);
 
 Stream.prototype._transform = function (file, enc, cb) {
-	var content = file.contents.toString().replace(/(?:\r\n|\r|\n+|\t+|\s{2})/g, '');
-	var newContent =  'module.exports = "' + content.trim() + '";';
+  var content = file.contents.toString().replace(/(?:\r\n|\r|\n+|\t+|\s{2})/g, '');
+  var newContent =  'module.exports = "' + content.trim() + '";';
 
-	var newFile = file.clone({content: false});
-	newFile.basename = file.basename + '.js';
-	newFile.contents = new Buffer(newContent);
-	this.push(newFile);
+  var newFile = file.clone({content: false});
+  newFile.basename = file.basename + '.js';
+  newFile.contents = new Buffer(newContent);
+  this.push(newFile);
 
-	cb();
+  cb();
 };
 
 Stream.prototype._flush = function (cb) {
-	cb();
+  cb();
 };
 
 module.exports = function (options) {
